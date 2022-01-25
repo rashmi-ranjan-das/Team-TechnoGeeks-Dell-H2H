@@ -1,16 +1,10 @@
-import logo from "./logo.svg";
-import "./App.css";
+import React from 'react';
 
 function App() {
   return (
     <>
-      <nav className="navbar navbar-light bg-light" style={{backgroundColor:"#e3f2fd"}}>
-        <div className="container-fluid">
-          <span className="navbar-brand mb-0 h1" style={{color:"#3894d1"}}>DELL H2H</span>
-        </div>
-      </nav>
       <div className="container my-3">
-        <div className="card p-3" style={{backgroundColor:"#edfeff"}}>
+        <div className="card p-3">
           <form>
             <div className="mb-3">
               <label for="exampleInputEmail1" className="form-label">
