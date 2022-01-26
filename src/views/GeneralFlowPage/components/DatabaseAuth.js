@@ -1,11 +1,13 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const DatabaseAuth = props => {
     const classes = useStyles();
     const [state, setState] = useState({data:{}, error: {}});
+    const activeStep = props.activeStep;
+    const setActiveStep = props.setActiveStep;
 
     const handleInputChange = e => {
         var k = e.target.name;
@@ -17,6 +19,27 @@ const DatabaseAuth = props => {
                 [k]: v
             }
         }))
+    }
+
+    function handleDbAuthentication(){
+        console.log("@@@", state)
+        fetch('http://127.0.0.1:8000/api/db/authentication/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(state.data)
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data)
+            if(data['Authenticated']){
+                sessionStorage.setItem('db_url', data['db_url'])
+                sessionStorage.setItem('username', data['username'])
+                sessionStorage.setItem('password', data['password'])
+                setActiveStep(activeStep + 1)
+            }
+        })
+        .catch(err => console.log(err))
     }
 
     return(
@@ -60,7 +83,7 @@ const DatabaseAuth = props => {
                 </Grid>
                 <div className='d-flex space-between'>
                     <button className='btn btn-outline-grey' style={{visibility: 'hidden'}}>Reset</button>
-                    <button className='btn btn-submit mt-10'>Authenticate</button>
+                    <button className='btn btn-submit mt-10' onClick={handleDbAuthentication}>Authenticate</button>
                 </div>
             </div>
         </div>

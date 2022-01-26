@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import App from '../../App';
 import DatabaseAuth from './components/DatabaseAuth'
+import TableSelection from './components/TableSelection';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -103,7 +104,14 @@ const GeneralFlow = props => {
                 <React.Fragment>
                     {
                         activeStep + 1 === 1 ? 
-                        <Typography sx={{ mt: 2, mb: 1 }}><DatabaseAuth /></Typography>
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            <DatabaseAuth setActiveStep={setActiveStep} activeStep={activeStep}  />
+                        </Typography>
+                        :
+                        activeStep + 1 === 2 ?
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            <TableSelection />
+                        </Typography>
                         :
                         null
                     }
