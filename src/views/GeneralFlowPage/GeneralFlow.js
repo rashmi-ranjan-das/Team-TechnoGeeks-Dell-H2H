@@ -110,7 +110,7 @@ const GeneralFlow = props => {
                         :
                         activeStep + 1 === 2 ?
                         <Typography sx={{ mt: 2, mb: 1 }}>
-                            <TableSelection />
+                            <TableSelection setActiveStep={setActiveStep} activeStep={activeStep} />
                         </Typography>
                         :
                         null

@@ -6,13 +6,7 @@ import { JsonToTable } from "react-json-to-table";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-
-const myJson = {
-    "Study sponsors": [
-      { name: "john", email: "john@@xyz.com", phone: "8249180488" },
-      { name: "jane", email: "jane@@xyz.com" }
-    ]
-  };
+import { Loading } from "../../../components/Loading";
 
 const style = {
     position: 'absolute',
@@ -30,10 +24,14 @@ const TableSelection = props => {
     const classes = useStyles();
     const [state, setState] = useState({data:{}, error: {}});
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const activeStep = props.activeStep;
+    const setActiveStep = props.setActiveStep;
 
     useEffect(() => {
+        setLoading(true);
         fetch('http://127.0.0.1:8000/api/db/details/', {
             method: 'POST',
             headers: {
@@ -54,6 +52,7 @@ const TableSelection = props => {
                 table_names_of_selected_db: getTableNames(data),
                 table_data: getTableData(data)
             }))
+            setLoading(false)
         })
         .catch(err => console.log(err))
     }, [])
@@ -88,10 +87,37 @@ const TableSelection = props => {
         }))
     }
 
+    function handleTableMigration(){
+        setLoading(true);
+        fetch('http://127.0.0.1:8000/api/db/model/prediction/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                db_url: sessionStorage.getItem('db_url'),
+                db_username: sessionStorage.getItem('username'),
+                db_password: sessionStorage.getItem('password'),
+                database: state.data.database,
+                table: state.data.table
+            })
+        }).then(response => response.json())
+        .then(data => {
+            console.log("PPPP", data)
+            sessionStorage.clear();
+            setLoading(false)
+            setActiveStep(activeStep + 1)
+        })
+        .catch(err => console.log(err))
+    }
+
     console.log(state)
 
     return(
         <>
+        {
+            loading ? <Loading /> : null
+        }
         <div className={classes.root}>
             <div class="card pd-20">
                 <Grid container spacing="2">
@@ -153,7 +179,7 @@ const TableSelection = props => {
                 </div>
                 <div className='d-flex space-between'>
                     <button className='btn btn-outline-grey' style={{visibility: 'hidden'}}>Reset</button>
-                    <button className='btn btn-submit mt-10'>Proceed</button>
+                    <button className='btn btn-submit mt-10' onClick={handleTableMigration}>Proceed</button>
                 </div>
             </div>
         </div>
