@@ -9,6 +9,7 @@ import { makeStyles } from '@mui/styles';
 import App from '../../App';
 import DatabaseAuth from './components/DatabaseAuth'
 import TableSelection from './components/TableSelection';
+import FinalConfirmation from './components/FinalConfirmation';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-const steps = ['MySQL Database Authentication', 'Select Table to Migrate', 'Final Steps'];
+const steps = ['MySQL Database Authentication', 'Select Table to Migrate', 'Execution Details'];
 
 const GeneralFlow = props => {
     const [activeStep, setActiveStep] = React.useState(0);
@@ -50,8 +51,7 @@ const GeneralFlow = props => {
   const handleNext = () => {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
+        ? 
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
@@ -66,6 +66,7 @@ const GeneralFlow = props => {
   };
 
   const handleComplete = () => {
+    sessionStorage.clear()
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
@@ -113,6 +114,11 @@ const GeneralFlow = props => {
                             <TableSelection setActiveStep={setActiveStep} activeStep={activeStep} />
                         </Typography>
                         :
+                        activeStep + 1 === 3 ?
+                        <Typography sx={{ mt: 2, mb: 1 }}>
+                            <FinalConfirmation setActiveStep={setActiveStep} activeStep={activeStep} />
+                        </Typography>
+                        :
                         null
                     }
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
@@ -126,7 +132,7 @@ const GeneralFlow = props => {
                         <p className="main-heading">Back</p>
                     </Button>
                     <Box sx={{ flex: '1 1 auto' }} />
-                    <Button onClick={handleNext} sx={{ mr: 1 }} size="large">
+                    <Button onClick={handleNext} disabled={activeStep === 2} sx={{ mr: 1 }} size="large">
                         <p className="main-heading">Next</p>
                     </Button>
                     {activeStep !== steps.length &&

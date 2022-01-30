@@ -123,7 +123,9 @@ const DatabaseAuth = props => {
                 </Grid>
                 <div className='d-flex space-between'>
                     <button className='btn btn-outline-grey' style={{visibility: 'hidden'}}>Reset</button>
-                    <button className='btn btn-submit mt-10' onClick={handleDbAuthentication}>Authenticate</button>
+                    {
+                        db_authenticated ? null : <button className='btn btn-submit mt-10' onClick={handleDbAuthentication}>Authenticate</button>
+                    }
                 </div>
             </div>
         </div>

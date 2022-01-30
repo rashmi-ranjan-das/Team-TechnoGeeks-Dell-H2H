@@ -104,7 +104,7 @@ const TableSelection = props => {
         }).then(response => response.json())
         .then(data => {
             console.log("PPPP", data)
-            sessionStorage.clear();
+            sessionStorage.setItem("final_result", JSON.stringify(data))
             setLoading(false)
             setActiveStep(activeStep + 1)
         })
